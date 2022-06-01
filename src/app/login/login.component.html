@@ -1,7 +1,11 @@
 <mat-card class="login-page">
   <mat-card-title>Login</mat-card-title>
   <mat-card-content>
-    <form class="login-form data-form" #loginForm="ngForm">
+    <form
+      class="login-form data-form"
+      #loginForm="ngForm"
+      (ngSubmit)="login(loginForm, $event)"
+    >
       <mat-form-field>
         <input
           matInput
@@ -11,7 +15,6 @@
           name="email"
           required
           email
-          pattern="[a-z]+"
           minlength="3"
           maxlength="20"
           placeholder="Email"
@@ -36,13 +39,24 @@
         <input
           matInput
           ngModel
+          required
+          #password="ngModel"
           type="password"
           name="password"
           placeholder="Password"
         />
+
+        <mat-error *ngIf="password?.errors?.required">
+          The password is mandatory.
+        </mat-error>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" (click)="login(loginForm)">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!loginForm.valid"
+      >
         Login
       </button>
     </form>
