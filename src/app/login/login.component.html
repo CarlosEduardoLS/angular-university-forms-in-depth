@@ -46,15 +46,22 @@
           name="password"
           placeholder="Password"
         />
+      </mat-form-field>
 
-        <mat-error *ngIf="password?.errors?.required">
+      <ng-container
+        *ngIf="
+          password.errors
+            | onlyOneError: ['required', 'passwordStrength'] as error
+        "
+      >
+        <mat-error class="field-message" *ngIf="error?.required">
           The password is mandatory.
         </mat-error>
 
-        <mat-error *ngIf="password?.errors?.passwordStrength">
+        <mat-error class="field-message" *ngIf="error?.passwordStrength">
           Your password must have lower case, upper case and muneric characters.
         </mat-error>
-      </mat-form-field>
+      </ng-container>
 
       <button
         mat-raised-button
