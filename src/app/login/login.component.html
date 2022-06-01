@@ -3,7 +3,15 @@
   <mat-card-content>
     <form class="login-form data-form" #loginForm="ngForm">
       <mat-form-field>
-        <input matInput ngModel type="email" name="email" placeholder="Email" />
+        <input
+          matInput
+          ngModel
+          #email="ngModel"
+          type="email"
+          name="email"
+          required
+          placeholder="Email"
+        />
       </mat-form-field>
 
       <mat-form-field>
@@ -20,5 +28,9 @@
         Login
       </button>
     </form>
+
+    <div class="form-val">
+      {{ email.valid }}
+    </div>
   </mat-card-content>
 </mat-card>
