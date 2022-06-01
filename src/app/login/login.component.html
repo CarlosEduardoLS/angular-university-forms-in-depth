@@ -10,11 +10,25 @@
           type="email"
           name="email"
           required
+          email
+          pattern="[a-z]+"
+          minlength="3"
+          maxlength="20"
           placeholder="Email"
         />
 
         <mat-error *ngIf="email?.errors?.required">
           The email is mandatory.
+        </mat-error>
+
+        <mat-error *ngIf="email?.errors?.minlength">
+          Your email must have
+          {{ email.errors?.minlength.requiredLength }} chars, but it only has
+          {{ email.errors?.minlength.actualLength }}.
+        </mat-error>
+
+        <mat-error *ngIf="email.errors?.email">
+          This is not a valid email.
         </mat-error>
       </mat-form-field>
 
@@ -34,7 +48,7 @@
     </form>
 
     <div class="form-val">
-      {{ email.valid }}
+      {{ email.errors | json }}
     </div>
   </mat-card-content>
 </mat-card>
