@@ -10,6 +10,8 @@
         <input
           matInput
           ngModel
+          (ngModelChange)="onEmailChange($event)"
+          [ngModelOptions]="{ updateOn: 'blur' }"
           #email="ngModel"
           type="email"
           name="email"
