@@ -12,6 +12,10 @@
           required
           placeholder="Email"
         />
+
+        <mat-error *ngIf="email?.errors?.required">
+          The email is mandatory.
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field>
