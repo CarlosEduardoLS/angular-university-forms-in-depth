@@ -20,6 +20,8 @@ export class CreateCourseStep2Component implements OnInit {
         Validators.pattern("[0-9]+"),
       ],
     ],
+    promoStartAt: [null],
+    promoEndAt: [null],
   });
 
   ngOnInit() {
