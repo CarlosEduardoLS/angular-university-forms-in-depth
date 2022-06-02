@@ -8,31 +8,29 @@ import { courseTitleValidator } from "../../validators/course-title.validator";
   templateUrl: "./create-course-step-1.component.html",
   styleUrls: ["./create-course-step-1.component.scss"],
 })
-export class CreateCourseStep1Component implements OnInit {
+export class CreateCourseStep1Component {
   constructor(
     private readonly _fb: FormBuilder,
     private readonly courses: CoursesService
   ) {}
 
-  form: FormGroup;
-
-  ngOnInit() {
-    this.form = this._fb.group({
-      title: [
-        "",
-        {
-          validators: [
-            Validators.required,
-            Validators.minLength(5),
-            Validators.maxLength(60),
-          ],
-          asyncValidators: [courseTitleValidator(this.courses)],
-          updateOn: "blur",
-        },
-      ],
-      releasedAt: [new Date(), [Validators.required]],
-    });
-  }
+  form = this._fb.group({
+    title: [
+      "",
+      {
+        validators: [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(60),
+        ],
+        asyncValidators: [courseTitleValidator(this.courses)],
+        updateOn: "blur",
+      },
+    ],
+    releasedAt: [new Date(), [Validators.required]],
+    downloadsAllowed: [false, [Validators.requiredTrue]],
+    longDescription: ["", [Validators.required, Validators.minLength(3)]],
+  });
 
   get courseTitle() {
     return this.form.controls["title"];
