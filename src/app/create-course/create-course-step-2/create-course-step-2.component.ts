@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
+import { filter } from "rxjs/operators";
 import { createPromoRangeValidator } from "../../validators/date-range.validator";
 
 @Component({
@@ -32,6 +33,14 @@ export class CreateCourseStep2Component implements OnInit {
   );
 
   ngOnInit() {
+    const draft = localStorage.getItem("STEP_2");
+
+    if (draft) this.form.setValue(JSON.parse(draft));
+
+    this.form.valueChanges
+      .pipe(filter(() => this.form.valid))
+      .subscribe((val) => localStorage.setItem("STEP_2", JSON.stringify(val)));
+
     this.form.valueChanges.subscribe((val) => {
       const priceControl = this.form.controls["price"];
 
