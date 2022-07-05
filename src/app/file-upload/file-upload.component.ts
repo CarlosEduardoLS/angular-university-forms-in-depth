@@ -1,6 +1,13 @@
 import { HttpClient, HttpEventType } from "@angular/common/http";
 import { Component, Input } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from "@angular/forms";
 import { of } from "rxjs";
 import { catchError, finalize } from "rxjs/operators";
 
@@ -14,14 +21,16 @@ import { catchError, finalize } from "rxjs/operators";
       multi: true,
       useExisting: FileUploadComponent,
     },
+    { provide: NG_VALIDATORS, multi: true, useExisting: FileUploadComponent },
   ],
 })
-export class FileUploadComponent implements ControlValueAccessor {
+export class FileUploadComponent implements ControlValueAccessor, Validator {
   constructor(private readonly http: HttpClient) {}
 
   fileName: string = "";
   fileUploadError = false;
   uploadProgress: number;
+  fileUploadSuccess = false;
 
   @Input() requiredFileType: string;
 
@@ -33,6 +42,8 @@ export class FileUploadComponent implements ControlValueAccessor {
   onChange: (fileName: string) => {};
 
   onTouched: () => {};
+
+  onValidatorChange = () => {};
 
   disabled: boolean = false;
 
@@ -50,6 +61,22 @@ export class FileUploadComponent implements ControlValueAccessor {
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+  validate(control: AbstractControl): ValidationErrors | null {
+    if (this.fileUploadSuccess) return null;
+
+    let errors: any = {
+      requiredFileType: this.requiredFileType,
+    };
+
+    if (this.fileUploadError) errors.uploadFailed = true;
+
+    return errors;
+  }
+
+  registerOnValidatorChange?(onValidatorChange: () => void): void {
+    this.onValidatorChange = onValidatorChange;
   }
 
   onFileSelected(event: any) {
@@ -80,7 +107,9 @@ export class FileUploadComponent implements ControlValueAccessor {
               100 * (event.loaded / event.total)
             );
           } else if (event.type === HttpEventType.Response) {
+            this.fileUploadSuccess = true;
             this.onChange(this.fileName);
+            this.onValidatorChange();
           }
         });
     }
