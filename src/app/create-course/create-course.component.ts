@@ -1,5 +1,5 @@
 import { STEPPER_GLOBAL_OPTIONS } from "@angular/cdk/stepper";
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 
 @Component({
   selector: "create-course",
@@ -12,6 +12,8 @@ import { Component, OnInit } from "@angular/core";
     },
   ],
 })
-export class CreateCourseComponent implements OnInit {
-  ngOnInit() {}
+export class CreateCourseComponent {
+  submit(step1, step2, step3) {
+    console.log(step1, step2, step3);
+  }
 }
