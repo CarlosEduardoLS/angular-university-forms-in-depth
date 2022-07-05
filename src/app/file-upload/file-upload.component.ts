@@ -1,5 +1,6 @@
 import { HttpClient, HttpEventType } from "@angular/common/http";
 import { Component, Input } from "@angular/core";
+import { ControlValueAccessor } from "@angular/forms";
 import { of } from "rxjs";
 import { catchError, finalize } from "rxjs/operators";
 
@@ -8,7 +9,7 @@ import { catchError, finalize } from "rxjs/operators";
   templateUrl: "file-upload.component.html",
   styleUrls: ["file-upload.component.scss"],
 })
-export class FileUploadComponent {
+export class FileUploadComponent implements ControlValueAccessor {
   constructor(private readonly http: HttpClient) {}
 
   fileName: string = "";
@@ -16,6 +17,33 @@ export class FileUploadComponent {
   uploadProgress: number;
 
   @Input() requiredFileType: string;
+
+  onClick(fileUpload: HTMLInputElement) {
+    this.onTouched();
+    fileUpload.click();
+  }
+
+  onChange: (fileName: string) => {};
+
+  onTouched: () => {};
+
+  disabled: boolean = false;
+
+  writeValue(value: string): void {
+    this.fileName = value;
+  }
+
+  registerOnChange(value: (val: string) => {}): void {
+    this.onChange = value;
+  }
+
+  registerOnTouched(value: () => {}): void {
+    this.onTouched = value;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
@@ -44,6 +72,8 @@ export class FileUploadComponent {
             this.uploadProgress = Math.round(
               100 * (event.loaded / event.total)
             );
+          } else if (event.type === HttpEventType.Response) {
+            this.onChange(this.fileName);
           }
         });
     }
